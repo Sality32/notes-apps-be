@@ -1,0 +1,46 @@
+name: Pipeline
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps: 
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Set Up Node v18.*
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18'
+
+    - name: Install Dependencies
+      run: npm install
+
+
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@dev
+      with:
+        key: ${{ secrets.SERVER_SECRET }}
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.SERVER_USER }}
+        port: ${{ secrets.SERVER_PORT }}
+        script: |
+          cd ~/home/${{ secrets.SECRET_USER }}/note-apps-be
+          
+          # Re-create .env file
+          echo "APP_PORT=${{ secrets.APP_PORT }}" > .env
+          echo "APP_URL=${{ secrets.APP_URL }}" >> .env
+
+          # Pull latest branch code
+          git pull origin dev
+          
+          # Install dependencies
+          npm install
+
+          # Restart PM2
+          pm2 restart notes-apps-be
