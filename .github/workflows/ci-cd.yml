@@ -23,14 +23,14 @@ jobs:
 
 
     - name: Deploy to VPS
-      uses: appleboy/ssh-action@dev
+      uses: appleboy/ssh-action@master
       with:
         key: ${{ secrets.SERVER_SECRET }}
         host: ${{ secrets.SERVER_IP }}
         username: ${{ secrets.SERVER_USER }}
         port: ${{ secrets.SERVER_PORT }}
         script: |
-          cd ~/home/${{ secrets.SECRET_USER }}/note-apps-be
+          cd ~/home/${{ secrets.SERVER_USER }}/note-apps-be
           
           # Re-create .env file
           echo "APP_PORT=${{ secrets.APP_PORT }}" > .env
