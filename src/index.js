@@ -7,6 +7,11 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+app.get('/:name', (req, res) => {
+  res.send(`Hallo ${req.params.name}`);
+});
+
+
 
 app.listen(port, () => {
   console.log(`App listeing on port ${port}`);
